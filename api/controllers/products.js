@@ -38,7 +38,7 @@ exports.products_get_all = (req, res, next) => {
     // // .limit(perPage).skip(perPage*pageNumber)
     // .sort({name: sort});
 
-    var perPage = 12, pageNumber = req.query.pageNumber;
+    var perPage = 12, pageNumber = req.query.page;
     var keyword = req.query.keyword;
     var category = req.query.filterCategory;
     var brand = req.query.filterBrand;
@@ -46,10 +46,10 @@ exports.products_get_all = (req, res, next) => {
     var brandArray = [], categoryArray = [];
     brandArray.push(brand);
     categoryArray.push(category);
-    var formattedCategory = categoryArray[0].split(',');
-    var formattedBrand = brandArray[0].split(',');
-    console.log(formattedBrand);
-    console.log(formattedCategory);
+    // var formattedCategory = categoryArray[0].split(',');
+    // var formattedBrand = brandArray[0].split(',');
+    console.log(sort);
+    console.log(pageNumber);
     Product.aggregate([
         { "$lookup": {
             from: "brands",
@@ -83,8 +83,8 @@ exports.products_get_all = (req, res, next) => {
         //         {"category.name": { "$in": formattedCategory }} 
         //     ]
         // }}, 
-        // { "$limit": perPage },
-        // { "$skip": parseInt(pageNumber) * perPage },
+        { "$skip": (parseInt(pageNumber) -1) * perPage },
+        { "$limit": perPage },
         // { "$match": { "category._id": { $: /^5d6a1/i } } },
         // { "$group": {_id: "$category"}},
         // { "$count": "allDocumentCount"}
